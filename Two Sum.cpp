@@ -10,7 +10,7 @@ class Solution {
 public:
     vector<int> twoSum(vector<int> &numbers, int target) {
 		//set<int> s(numbers.begin(),numbers.end());
-		map<int,int> m, m_copy;
+		map<int,int> m;
 		vector<int> r(2);
 		for(int i=0;i<numbers.size();i++){
 			if(numbers[i]*2==target){
