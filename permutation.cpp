@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-
+#include <set>
 using namespace std;
 
 
@@ -18,6 +18,40 @@ void print_vector(vector<int> x){
     }
     cout << endl;
 }
+
+
+class Solution1 {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int> > answer;
+        vector<int> item;
+        vector<bool> used = vector<bool>(nums.size(),false);
+        help(answer,item,nums,used);
+        return answer;
+    }
+    
+    void help(vector<vector<int> >& answer, vector<int>item, vector<int>& nums, vector<bool>& used){
+        if(item.size()==nums.size()){
+            answer.push_back(item);
+            return;
+        }
+        //set<int> s;
+        for(int i=0;i<nums.size();i++){
+            if(used[i]==true || (i>0 && used[i-1]==false && nums[i]==nums[i-1]))
+                continue;
+            
+            item.push_back(nums[i]);
+            used[i] = true;
+            //s.insert(nums[i]);
+            help(answer,item,nums,used);
+            item.pop_back();
+            used[i] = false;
+        }
+    }
+};
+
+
 
 
 class Solution{
@@ -75,16 +109,18 @@ public:
 
 
 int main() {
-    Solution s = Solution();
+    Solution1 s = Solution1();
     vector<int> v;
     v.push_back(1);
+
     v.push_back(1);
     v.push_back(1);
     v.push_back(2);
     v.push_back(2);
 
-    vector<vector<int> >x = s.permuteUnique(v);
+    vector<vector<int> >x = s.permute(v);
     print_2d_vector(x);
+    cout<<x.size();
 
 
 }

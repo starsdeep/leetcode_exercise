@@ -15,6 +15,15 @@ void print_array(int a[], int n){
 	cout << endl;
 }
 
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+              
+    }
+};
+
+
 /*
 class Solution {
 public:

@@ -1,56 +1,43 @@
 #include <iostream>
 #include <vector>
-#include <map>
-#include <set>
 #include <algorithm>
+#include <cmath>
 using namespace std;
-
-void pirnt_map(map<int,int>& m){
-	for(map<int,int>::iterator it = m.begin();it!=m.end();it++)
-		cout << it->first << "=>" << it->second << std::endl;
-	cout << endl;
-}
 
 class Solution {
 public:
-    int maximumGap(vector<int> &num) {
-        if(num.size()<2) return 0;
-        map<int,int> res;
-        set<int> inserted;
-        int diff;
-        for(int i=0;i<num.size();i++){
-        	if(inserted.find(num[i])!=inserted.end()) continue;
-        	inserted.insert(num[i]);
-        	if(res.find(num[i])==res.end()){
-        		res[num[i]+1] = -1;
-        		res[num[i]-1] = 1;
-        	}
-        	else{
-        		int diff = res[num[i]];
-        		if(res[num[i]]>0){
-        			res[num[i]-1] = diff+1;
-        			res[num[i]+diff+1] = res[num[i]+diff+1]-1;
-        			res.erase(num[i]);
-        		}
-        		else{
-        			res[num[i]+1] = diff-1;
-        			res[num[i]+diff-1] = res[num[i]+diff-1]+1;
-        			res.erase(num[i]);
-        		}
-        	}
+    int maximumGap(vector<int>& nums) {
+        if(nums.size()<=1) return 0;
+        int max_value = *max_element(nums.begin(), nums.end());
+        int min_value = *min_element(nums.begin(), nums.end());
+        int bucket_size = int(ceil((max_value - min_value)*1.0 / (nums.size()-1)));
+
+        vector<int> max_buckets(nums.size()-1, -1);
+        vector<int> min_buckets(nums.size()-1, max_value+1);
+
+        for(int i=0;i<nums.size();i++){
+        	if(nums[i]==min_value || nums[i]==max_value)
+        		continue;
+        	int idx = (nums[i]-min_value) / bucket_size;
+        	max_buckets[idx] = max(max_buckets[idx],nums[i]);
+        	min_buckets[idx] = min(min_buckets[idx],nums[i]);
         }
-        pirnt_map(res);
-        auto pr = max_element(res.begin(), res.end(),
-      	[](const pair<int, int>& p1, const pair<int, int>& p2) {
-        return p1.second < p2.second; });
-        return pr->second;
+        int prev = min_value;
+        int max_gap = 0;
+        for(int i=0;i<max_buckets.size();i++){
+        	if(max_buckets[i] == -1)
+        		continue;
+        	cout << max_gap << ", "<< min_buckets[i] << " " << max_buckets[i] << " " << prev << endl;
+        	max_gap = max(max_gap, min_buckets[i]-prev);
+        	prev = max_buckets[i];
+        }
+        return max(max_gap,max_value-prev);
+        
     }
 };
 
 int main(){
-	//out << "hello";
-	Solution s = Solution();
-	int a[] = {1,1000000};
-	vector<int> v = vector<int>(a,a+2);
+	vector<int> v = {3,6,9,1};
+	Solution s;
 	cout << s.maximumGap(v);
 }
